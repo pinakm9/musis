@@ -32,10 +32,10 @@ b5 = tf.Variable(tf.random_normal([10]), name='b4')"""
 
 # calculate the output of the hidden layer
 hidden_out1 = tf.add(tf.matmul(x, W1), b1)
-hidden_out1 = tf.nn.relu(hidden_out1)
+hidden_out1 = tf.nn.sigmoid(hidden_out1)
 
 hidden_out2 = tf.add(tf.matmul(hidden_out1, W2), b2)
-hidden_out2 = tf.nn.relu(hidden_out2)
+hidden_out2 = tf.nn.sigmoid(hidden_out2)
 
 """hidden_out3 = tf.add(tf.matmul(hidden_out2, W3), b3)
 hidden_out3 = tf.nn.relu(hidden_out3)
