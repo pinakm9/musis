@@ -38,7 +38,7 @@ def label(file):
 	for i, genre in enumerate(genres):
 		if genre in file:
 			y[i] = 1.0
-	return y
+	return np.array(y)
 
 @timer
 def store(tfrac = 0.7, random = False):
@@ -85,7 +85,7 @@ class Datum:
 
 
 class MusicDB:
-	
+
 	def __init__(self, trm, trl, tem, tel):
 		self.train = Datum()
 		self.test = Datum()
@@ -98,3 +98,37 @@ class MusicDB:
 	def extract(self, file, dtype = 'float32'):
 		df = pd.read_csv(file, sep = '\t')
 		return np.array([list(x)[1:] for x in df.T.itertuples()][1:], dtype = dtype)
+
+	@timer
+	def remove_genre(self, genre):
+		l = label(genre)
+		j = np.nonzero(l==1)[0][0]
+		d = []
+		for i, item in enumerate(self.train.labels):
+			if item[j] == 1:
+				d.append(i)
+		self.train.music = np.delete(self.train.music, d, axis = 0)
+		self.train.labels = np.delete(self.train.labels, d, axis = 0)
+		d = []
+		for i, item in enumerate(self.test.labels):
+			if item[j] == 1:
+				d.append(i)
+		self.test.music = np.delete(self.test.music, d, axis = 0)
+		self.test.labels = np.delete(self.test.labels, d, axis = 0)
+
+	@timer
+	def remove_genres(self, genres):
+		f = lambda x: np.nonzero(label(x) == 1)[0][0]
+		d = list(map(f, genres))
+		for genre in genres:
+			self.remove_genre(genre)
+		labels = []
+		for item in self.train.labels:
+			labels.append(np.delete(item, d, axis = 0))
+		self.train.labels = np.array(labels, dtype = 'float32')
+		labels = [] 
+		for item in self.test.labels:
+			labels.append(np.delete(item, d, axis = 0))
+		self.test.labels = np.array(labels, dtype = 'float32') 
+
+#store(tfrac = 0.5, random = True)

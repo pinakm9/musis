@@ -1,28 +1,29 @@
 import tensorflow as tf
 from utility import *
 import process as pr
-
+import numpy as np
 gtzan = pr.MusicDB(p2_train, p2_train_label, p2_test, p2_test_label)
-
+gtzan.remove_genres(['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz'])
 # Python optimisation variables
-learning_rate = 0.01
-epochs = 50
-batch_size = 100
+learning_rate = 0.001
+epochs = 80
+batch_size = 80
+genre = 4
 
 # declare the training data placeholders
 # input x - mfcc array
 x = tf.placeholder(tf.float32, [None, 13*fpf])
 # now declare the output data placeholder - 10 digits
-y = tf.placeholder(tf.float32, [None, 10])
+y = tf.placeholder(tf.float32, [None, genre])
 # now declare the weights connecting the input to the hidden layer
-W1 = tf.Variable(tf.random_normal([13*fpf, 1000], stddev=0.03), name='W1')
-b1 = tf.Variable(tf.random_normal([1000]), name='b1')
+W1 = tf.Variable(tf.random_normal([13*fpf, 500], stddev=0.03), name='W1')
+b1 = tf.Variable(tf.random_normal([500]), name='b1')
 # and the weights connecting the hidden layer to the output layer
-W2 = tf.Variable(tf.random_normal([1000, 100], stddev=0.04), name='W2')
+W2 = tf.Variable(tf.random_normal([500, 100], stddev=0.04), name='W2')
 b2 = tf.Variable(tf.random_normal([100]), name='b2')
 
-W3 = tf.Variable(tf.random_normal([100, 10], stddev=0.05), name='W3')
-b3 = tf.Variable(tf.random_normal([10]), name='b3')
+W3 = tf.Variable(tf.random_normal([100, genre], stddev=0.05), name='W3')
+b3 = tf.Variable(tf.random_normal([genre]), name='b3')
 
 """W4 = tf.Variable(tf.random_normal([500, 100], stddev=0.03), name='W4')
 b4 = tf.Variable(tf.random_normal([100]), name='b4')
@@ -71,4 +72,4 @@ with tf.Session() as sess:
 		print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
 	print(sess.run(accuracy, feed_dict={x: gtzan.train.music, y: gtzan.train.labels}))
 	print(sess.run(accuracy, feed_dict={x: gtzan.test.music, y: gtzan.test.labels}))
-	print(sess.run(accuracy, feed_dict={x: [gtzan.train.music[0]], y: [gtzan.train.labels[0]]}))
+print np.array(W2)

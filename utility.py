@@ -20,6 +20,7 @@ def timer(func):
 		return val
 	return new_func
 
+# Similar ls command ubuntu, lists subdirectories 1 level deep
 def ls_full_path(d):
     l = [os.path.join(d, f) for f in os.listdir(d)]
     l.sort()
