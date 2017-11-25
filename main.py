@@ -18,10 +18,10 @@ y = tf.placeholder(tf.float32, [None, 10])
 W1 = tf.Variable(tf.random_normal([13*fpf, 1000], stddev=0.03), name='W1')
 b1 = tf.Variable(tf.random_normal([1000]), name='b1')
 # and the weights connecting the hidden layer to the output layer
-W2 = tf.Variable(tf.random_normal([1000, 100], stddev=0.03), name='W2')
+W2 = tf.Variable(tf.random_normal([1000, 100], stddev=0.04), name='W2')
 b2 = tf.Variable(tf.random_normal([100]), name='b2')
 
-W3 = tf.Variable(tf.random_normal([100, 10], stddev=0.03), name='W3')
+W3 = tf.Variable(tf.random_normal([100, 10], stddev=0.05), name='W3')
 b3 = tf.Variable(tf.random_normal([10]), name='b3')
 
 """W4 = tf.Variable(tf.random_normal([500, 100], stddev=0.03), name='W4')
@@ -32,10 +32,10 @@ b5 = tf.Variable(tf.random_normal([10]), name='b4')"""
 
 # calculate the output of the hidden layer
 hidden_out1 = tf.add(tf.matmul(x, W1), b1)
-hidden_out1 = tf.nn.sigmoid(hidden_out1)
+hidden_out1 = tf.nn.relu(hidden_out1)
 
 hidden_out2 = tf.add(tf.matmul(hidden_out1, W2), b2)
-hidden_out2 = tf.nn.sigmoid(hidden_out2)
+hidden_out2 = tf.nn.relu(hidden_out2)
 
 """hidden_out3 = tf.add(tf.matmul(hidden_out2, W3), b3)
 hidden_out3 = tf.nn.relu(hidden_out3)
