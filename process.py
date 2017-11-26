@@ -4,6 +4,7 @@ import python_speech_features as sf
 import numpy as np
 import pandas as pd
 import os
+from matplotlib.mlab import PCA
 
 #@timer
 def mfcc(file = "./../data/genres_wav/blues/blues.00002.wav"):
@@ -128,6 +129,11 @@ class MusicDB:
 		labels = [] 
 		for item in self.test.labels:
 			labels.append(np.delete(item, d, axis = 0))
-		self.test.labels = np.array(labels, dtype = 'float32') 
+		self.test.labels = np.array(labels, dtype = 'float32')
+
+	@timer
+	def pcafy(self):
+		pca = PCA(self.train.music.T)
+		print pca.numrows, pca.numcols
 
 #store(tfrac = 0.5, random = True)

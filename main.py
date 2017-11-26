@@ -61,7 +61,7 @@ def test(genres_to_remove = [], epochs = 80):
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 	# start the session
 	with tf.Session() as sess:
-	   # initialise the variables
+	   # initialize the variables
 		sess.run(init_op)
 		total_batch = int(len(gtzan.train.labels)/batch_size)
 		for epoch in range(epochs):
@@ -72,7 +72,9 @@ def test(genres_to_remove = [], epochs = 80):
 		                     feed_dict={x: batch_x, y: batch_y})
 				avg_cost += c / total_batch
 			print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
-		print(sess.run(accuracy, feed_dict={x: gtzan.train.music, y: gtzan.train.labels}))
-		print(sess.run(accuracy, feed_dict={x: gtzan.test.music, y: gtzan.test.labels}))
+		print('Accuracy on trainig data: {}%'.format(100*\
+			sess.run(accuracy, feed_dict={x: gtzan.train.music, y: gtzan.train.labels})))
+		print('Accuracy on test data: {}%'.format(100*\
+			sess.run(accuracy, feed_dict={x: gtzan.test.music, y: gtzan.test.labels})))
 
 test(['jazz', 'hiphop', 'pop', 'rock', 'blues'], 80)

@@ -10,6 +10,7 @@ p2_test_label = './../data/test_label.csv'
 p2_train_list = './../data/train_list.txt'
 p2_test_list = './../data/test_list.txt'
 genres =  ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
+colors = ['blue', 'green', 'magenta', 'yellow', 'black', 'red', 'fuchsia', 'lightcoral', 'indigo', 'maroon']
 
 # Timing wrapper
 def timer(func):
@@ -32,3 +33,17 @@ def mkdir(directory):
 	if not os.path.exists(directory):
 		os.makedirs(directory)
 
+# Identifies genres from their position in genres
+def gmap(string, rest = False):
+	l = []
+	pos = list( map(int, list(string)) )
+	if rest is False:
+		for p in pos:
+			l.append(genres[p])
+	else:
+		pos_ = list(range(len(genres)))
+		for p in pos:
+			pos_.remove(p)
+		for p in pos_:
+			l.append(genres[p]) 
+	return l

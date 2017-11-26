@@ -4,41 +4,45 @@ import process as pr
 from utility import *
 from matplotlib import pyplot as plt
 import matplotlib
+import itertools as it
 
-def remaining(genres_to_remove)
-	l = genres
+def remaining(genres_to_remove):
+	l = [g for g in genres]
 	for genre in genres_to_remove:
 		l.remove(genre)
 	return l
 
-def pca_plot(axis1, axis2, genres_to_remove):
-	colors = ['blue', 'green', 'magenta', 'yellow', 'black', 'red', 'fuchsia', 'lightcoral', 'indigo', 'maroon']
+@timer
+def pca_plot(axis1, axis2, genres_to_keep):
 	# Process data and compute PCA
 	gtzan = pr.MusicDB(p2_train, p2_train_label, p2_test, p2_test_label)
+	genres_to_remove = gmap(genres_to_keep, rest = True)
 	gtzan.remove_genres(genres_to_remove)
 	mfcc_pca = PCA(gtzan.train.music.T)
-	# Create color map
 	genre = 10 - len(genres_to_remove)
 	spg = mfcc_pca.Wt[0].shape[0]/genre
-	color_map = []
-	i = 0
-	color = colors[i]
-	while True:
-		color_map.append(color)
-		i += 1 
-		if i == spg*genre:
-			break
-		if i%spg == 0:
-			color = colors[i/spg]
 	# Make sure plots folder exists
 	mkdir('plots')
 	# Plot
-	X = mfcc_pca.Wt[axis1-1]
-	Y = mfcc_pca.Wt[axis2-1]
-	plt.scatter(X, Y, c = color_map)
+	fig, ax = plt.subplots()
+	rest = remaining(genres_to_remove)
+	tag = ''
+	for genre in rest:
+		tag += str(genres.index(genre)) 
+	for i, genre in enumerate(rest):
+		color = colors[i]
+		X = mfcc_pca.Wt[axis1-1][i*spg:(i+1)*spg]
+		Y = mfcc_pca.Wt[axis2-1][i*spg:(i+1)*spg]
+		plt.scatter(X, Y, c = color, label = genre)
 	plt.xlabel('pca' + str(axis1))
 	plt.ylabel('pca' + str(axis2))
-	
-	plt.savefig('plots/pca_' + str(axis1) + '_' + str(axis2) + '.png')
+	plt.legend()
+	plt.savefig('plots/pca_' + str(axis1) + '_' + str(axis2) + '_' + tag + '.png')
 
-pca_plot(1, 2, ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', ])
+@timer
+def pca_plt(axis1, axis2, num_genre):
+	toStr = lambda comb: ''.join([str(x) for x in comb])
+	for comb in it.combinations(list(range(len(genres))), num_genre):
+		pca_plot(axis1, axis2, toStr(comb))
+
+pca_plt(2, 3, 2)
