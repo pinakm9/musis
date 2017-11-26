@@ -130,10 +130,5 @@ class MusicDB:
 		for item in self.test.labels:
 			labels.append(np.delete(item, d, axis = 0))
 		self.test.labels = np.array(labels, dtype = 'float32')
-
-	@timer
-	def pcafy(self):
-		pca = PCA(self.train.music.T)
-		print pca.numrows, pca.numcols
-
+		
 #store(tfrac = 0.5, random = True)

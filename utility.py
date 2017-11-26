@@ -9,6 +9,7 @@ p2_train_label = './../data/train_label.csv'
 p2_test_label = './../data/test_label.csv'
 p2_train_list = './../data/train_list.txt'
 p2_test_list = './../data/test_list.txt'
+p2_results = 'results.txt'
 genres =  ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 colors = ['blue', 'green', 'magenta', 'yellow', 'black', 'red', 'fuchsia', 'lightcoral', 'indigo', 'maroon']
 

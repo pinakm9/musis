@@ -3,78 +3,98 @@ from utility import *
 import process as pr
 import numpy as np
 
-
-def test(genres_to_remove = [], epochs = 80):
+def net(genres_to_keep = '0123456789', epochs = 80, learning_rate = 0.001, hnodes = [500, 100, 10], use_layers = 2):
+	"""
+	Neural network function, returns True if training was successful and False otherwise. In case training was 
+    unsuccessful try decreasing learning_rate. hnodes contains number of nodes in hidden layers, use_layers 
+    specifies if 2 or 3 hidden layers are to be used. genres_to_keep is a string containing the numeric ids of 
+    genres we'd like experiment on. 
+	"""
+	# Prepare data
 	gtzan = pr.MusicDB(p2_train, p2_train_label, p2_test, p2_test_label)
+	genres_to_remove = gmap(genres_to_keep, rest = True)
 	gtzan.remove_genres(genres_to_remove)
-	# Python optimisation variables
-	learning_rate = 0.007
 	batch_size = 100
 	genre = 10 - len(genres_to_remove)
-
-	# declare the training data placeholders
-	# input x - mfcc array
-	x = tf.placeholder(tf.float32, [None, 13*fpf])
-	# now declare the output data placeholder - 10 digits
+	features = gtzan.train.music[0].shape[0]
+	if use_layers == 2:
+		hnodes[2] = genre
+	# Declare the training data placeholders, input x = mfcc array
+	x = tf.placeholder(tf.float32, [None, features])
+	# Declare the output data placeholder - number of digits = genre
 	y = tf.placeholder(tf.float32, [None, genre])
-	# now declare the weights connecting the input to the hidden layer
-	W1 = tf.Variable(tf.random_normal([13*fpf, 500], stddev=0.03), name='W1')
-	b1 = tf.Variable(tf.random_normal([500]), name='b1')
-	# and the weights connecting the hidden layer to the output layer
-	W2 = tf.Variable(tf.random_normal([500, 100], stddev=0.04), name='W2')
-	b2 = tf.Variable(tf.random_normal([100]), name='b2')
-
-	W3 = tf.Variable(tf.random_normal([100, genre], stddev=0.05), name='W3')
-	b3 = tf.Variable(tf.random_normal([genre]), name='b3')
-
-	"""W4 = tf.Variable(tf.random_normal([500, 100], stddev=0.03), name='W4')
-	b4 = tf.Variable(tf.random_normal([100]), name='b4')
-
+	# Declare the weights connecting the input to the hidden layer 1
+	W1 = tf.Variable(tf.random_normal([features, hnodes[0]], stddev=0.03), name='W1')
+	b1 = tf.Variable(tf.random_normal([hnodes[0]]), name='b1')
+	# Weights connecting the hidden layer 1 to the hidden layer 2
+	W2 = tf.Variable(tf.random_normal([hnodes[0], hnodes[1]], stddev=0.04), name='W2')
+	b2 = tf.Variable(tf.random_normal([hnodes[1]]), name='b2')
+	# Weights connecting the hidden layer 2 to the hidden layer 3
+	W3 = tf.Variable(tf.random_normal([hnodes[1], hnodes[2]], stddev=0.05), name='W3')
+	b3 = tf.Variable(tf.random_normal([hnodes[2]]), name='b3')
+	"""
 	W5 = tf.Variable(tf.random_normal([100, 10], stddev=0.03), name='W4')
-	b5 = tf.Variable(tf.random_normal([10]), name='b4')"""
-
-	# calculate the output of the hidden layer
+	b5 = tf.Variable(tf.random_normal([10]), name='b4')
+	hidden_out4 = tf.add(tf.matmul(hidden_out3, W4), b4)
+	hidden_out4 = tf.nn.relu(hidden_out4)
+	"""
+	# Calculate the output of the hidden layers
 	hidden_out1 = tf.add(tf.matmul(x, W1), b1)
 	hidden_out1 = tf.nn.relu(hidden_out1)
 
 	hidden_out2 = tf.add(tf.matmul(hidden_out1, W2), b2)
 	hidden_out2 = tf.nn.relu(hidden_out2)
-
-	"""hidden_out3 = tf.add(tf.matmul(hidden_out2, W3), b3)
-	hidden_out3 = tf.nn.relu(hidden_out3)
-
-	hidden_out4 = tf.add(tf.matmul(hidden_out3, W4), b4)
-	hidden_out4 = tf.nn.relu(hidden_out4)"""
-	# now calculate the hidden layer output - in this case, let's use a softmax activated
-	# output layer
-	y_ = tf.nn.softmax(tf.add(tf.matmul(hidden_out2, W3), b3))
-	y_clipped = tf.clip_by_value(y_, 1e-10, 0.9999999)
-	cross_entropy = -tf.reduce_mean(tf.reduce_sum(y * tf.log(y_clipped)
-	                         + (1 - y) * tf.log(1 - y_clipped), axis=1))
-	# add an optimiser
-	optimiser = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cross_entropy)
+	
+	if use_layers == 3:
+		W4 = tf.Variable(tf.random_normal([hnodes[2], genre], stddev=0.03), name='W4')
+		b4 = tf.Variable(tf.random_normal([genre]), name='b4')
+		hidden_out3 = tf.add(tf.matmul(hidden_out2, W3), b3)
+		hidden_out3 = tf.nn.relu(hidden_out3)
+		y_ = tf.nn.softmax(tf.add(tf.matmul(hidden_out3, W4), b4))
+	else:
+		y_ = tf.nn.softmax(tf.add(tf.matmul(hidden_out2, W3), b3))
+	
+	# Calculate softmax activated output layer	
+	y_c = tf.clip_by_value(y_, 1e-10, 0.9999999)
+	cross_entropy = -tf.reduce_mean(tf.reduce_sum(y*tf.log(y_c) + (1-y)*tf.log(1-y_c), axis=1))
+	# Add an optimizer
+	optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate).minimize(cross_entropy)
 	# finally setup the initialisation operator
 	init_op = tf.global_variables_initializer()
-
-	# define an accuracy assessment operation
+	# Define an accuracy assessment operation
 	correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-	# start the session
+	# Start the session
+	cost0, fails = 1e9, 0
 	with tf.Session() as sess:
-	   # initialize the variables
+	   # Initialize the variables
 		sess.run(init_op)
 		total_batch = int(len(gtzan.train.labels)/batch_size)
 		for epoch in range(epochs):
 			avg_cost = 0
 			for i in range(total_batch):
 				batch_x, batch_y = gtzan.train.next(batch_size)
-				_, c = sess.run([optimiser, cross_entropy],\
-		                     feed_dict={x: batch_x, y: batch_y})
+				_, c = sess.run([optimizer, cross_entropy], feed_dict={x: batch_x, y: batch_y})
 				avg_cost += c / total_batch
-			print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
-		print('Accuracy on trainig data: {}%'.format(100*\
-			sess.run(accuracy, feed_dict={x: gtzan.train.music, y: gtzan.train.labels})))
-		print('Accuracy on test data: {}%'.format(100*\
-			sess.run(accuracy, feed_dict={x: gtzan.test.music, y: gtzan.test.labels})))
+			# Fail-safe if the minimization stagnates
+			if cost0 < avg_cost and avg_cost > 1e-6:
+				fails += 1
+				if fails == 50:
+					print("Method strayed away from minima")
+					return False # Training was unsuccessful
+			else:
+				cost0 = avg_cost
+				fails = 0
+			print("Epoch: {}, cost = {:.9f}".format((epoch + 1), avg_cost))
+		train_acc = sess.run(accuracy, feed_dict={x: gtzan.train.music, y: gtzan.train.labels})
+		# Print results
+		test_acc = sess.run(accuracy, feed_dict={x: gtzan.test.music, y: gtzan.test.labels})
+		print('Accuracy on training data: {:.2f}%'.format(100*train_acc))
+		print('Accuracy on test data: {:.2f}%'.format(100*test_acc))
+	# Store the results in a text file
+	with open(p2_results, 'a') as file:
+		file.write('{}  {}  {:.4f}\t{:.2f}\t{:.2f}\t{}  {}\n'\
+			.format(genres_to_keep, epochs, learning_rate, train_acc*100, test_acc*100, hnodes, use_layers))
+	return True # Training was successful 
 
-test(['jazz', 'hiphop', 'pop', 'rock', 'blues'], 80)
+net('024', 300, 0.002, [200, 100, 10], use_layers = 2)
