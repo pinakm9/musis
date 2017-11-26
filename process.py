@@ -33,7 +33,6 @@ def select(tfrac = 0.6, random = False):
 	return [train, test]
 
 def label(file):
-	genres =  ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 	y = [0.0 for i in range(10)]
 	for i, genre in enumerate(genres):
 		if genre in file:
@@ -117,10 +116,10 @@ class MusicDB:
 		self.test.labels = np.delete(self.test.labels, d, axis = 0)
 
 	@timer
-	def remove_genres(self, genres):
+	def remove_genres(self, genres_to_remove):
 		f = lambda x: np.nonzero(label(x) == 1)[0][0]
-		d = list(map(f, genres))
-		for genre in genres:
+		d = list(map(f, genres_to_remove))
+		for genre in genres_to_remove:
 			self.remove_genre(genre)
 		labels = []
 		for item in self.train.labels:

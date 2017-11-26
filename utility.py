@@ -9,6 +9,7 @@ p2_train_label = './../data/train_label.csv'
 p2_test_label = './../data/test_label.csv'
 p2_train_list = './../data/train_list.txt'
 p2_test_list = './../data/test_list.txt'
+genres =  ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 # Timing wrapper
 def timer(func):
@@ -25,3 +26,9 @@ def ls_full_path(d):
     l = [os.path.join(d, f) for f in os.listdir(d)]
     l.sort()
     return l
+
+# Creates directory if it doesn't exist
+def mkdir(directory):
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+
