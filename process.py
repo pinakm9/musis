@@ -7,7 +7,7 @@ import os
 from matplotlib.mlab import PCA
 
 #@timer
-def mfcc(file = "./../data/genres_wav/blues/blues.00002.wav"):
+def mfcc(file = "./../data/genres_wav/metal/metal.00092.wav"):
 	samplerate, signal = sw.read(file)
 	chunks = np.array_split(sf.mfcc(signal, samplerate, nfft = 1024), 4)
 	features = []
@@ -130,5 +130,5 @@ class MusicDB:
 		for item in self.test.labels:
 			labels.append(np.delete(item, d, axis = 0))
 		self.test.labels = np.array(labels, dtype = 'float32')
-		
+
 #store(tfrac = 0.5, random = True)

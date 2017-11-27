@@ -97,4 +97,4 @@ def net(genres_to_keep = '0123456789', epochs = 80, learning_rate = 0.001, hnode
 			.format(genres_to_keep, epochs, learning_rate, train_acc*100, test_acc*100, hnodes, use_layers))
 	return True # Training was successful 
 
-net('024', 300, 0.002, [200, 100, 10], use_layers = 2)
+net('0245', 300, 0.002, [200, 100, 10], use_layers = 2)

@@ -11,7 +11,7 @@ p2_train_list = './../data/train_list.txt'
 p2_test_list = './../data/test_list.txt'
 p2_results = 'results.txt'
 genres =  ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
-colors = ['blue', 'green', 'magenta', 'yellow', 'black', 'red', 'fuchsia', 'lightcoral', 'indigo', 'maroon']
+colors = ['blue', 'green', 'magenta', 'yellow', 'black', 'red', 'darkgrey', 'lightcoral', 'indigo', 'maroon']
 
 # Timing wrapper
 def timer(func):
@@ -34,7 +34,8 @@ def mkdir(directory):
 	if not os.path.exists(directory):
 		os.makedirs(directory)
 
-# Identifies genres from their position in genres
+# Identifies genres from their positions in genres (represented by a numeric string e.g. '075')
+# If rest is True returns a list containing the genres not in the input list
 def gmap(string, rest = False):
 	l = []
 	pos = list( map(int, list(string)) )
@@ -47,4 +48,11 @@ def gmap(string, rest = False):
 			pos_.remove(p)
 		for p in pos_:
 			l.append(genres[p]) 
+	return l
+
+# Returns remaining genres in genres, input is a list of strings
+def remaining(genres_to_remove):
+	l = [g for g in genres]
+	for genre in genres_to_remove:
+		l.remove(genre)
 	return l
