@@ -1,10 +1,12 @@
 import subprocess as sp
 import os
+from utility import *
 
-p2_data = './../data/genres/'
-p2_wav  = './../data/genres_wav/'
 p2_conv = './../../genres_wav/'
 
+# Make sure genres_wav folder exists
+mkdir(p2_wav)
+# Convert .au files to .wav files
 for folder in os.listdir(p2_data):
 	directory = p2_wav + folder + '/'
 	print('Working in {}'.format(directory))

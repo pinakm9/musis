@@ -6,13 +6,8 @@ from matplotlib import pyplot as plt
 import matplotlib
 import itertools as it
 
-def remaining(genres_to_remove):
-	l = [g for g in genres]
-	for genre in genres_to_remove:
-		l.remove(genre)
-	return l
 
-@timer
+@timer # Creates pca plot for training data, genres_to_keep is a numeric string
 def pca_plot(axis1, axis2, genres_to_keep):
 	# Process data and compute PCA
 	gtzan = pr.MusicDB(p2_train, p2_train_label, p2_test, p2_test_label)
@@ -39,10 +34,11 @@ def pca_plot(axis1, axis2, genres_to_keep):
 	plt.legend()
 	plt.savefig('plots/pca_' + str(axis1) + '_' + str(axis2) + '_' + tag + '.png')
 
-@timer
+@timer # Create all possible pca plots for groups with num_genre elements with axis1, axis2
+# e.g. if num_genre = 3 then we'd get all possible pca plots for 3-genre groups
 def pca_plt(axis1, axis2, num_genre):
 	toStr = lambda comb: ''.join([str(x) for x in comb])
 	for comb in it.combinations(list(range(len(genres))), num_genre):
 		pca_plot(axis1, axis2, toStr(comb))
 
-pca_plot(2, 3, '0123456789')
+pca_plot(2, 3, '012789')
