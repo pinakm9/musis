@@ -67,6 +67,8 @@ def identify(files, genres_to_keep, hnodes, use_layers):
 		test_acc = sess.run(accuracy, feed_dict={x: music, y: labels})
 		print('Accuracy on test data: {:.2f}%'.format(100*test_acc))
 
-identify(["./../data/genres_wav/blues/blues.00092.wav",\
-"./../data/genres_wav/blues/blues.00092.wav"], '02', [500, 100, 10], 2)
+# Usage: arguments must be compatible with the last model ...
+# computed according to use_layers as metioned in the docstring 
+identify(["./../data/genres_wav/metal/metal.00092.wav",\
+"./../data/genres_wav/metal/metal.00056.wav"], '16', [200, 100, 100], use_layers = 2)
 

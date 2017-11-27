@@ -41,4 +41,5 @@ def pca_plt(axis1, axis2, num_genre):
 	for comb in it.combinations(list(range(len(genres))), num_genre):
 		pca_plot(axis1, axis2, toStr(comb))
 
-pca_plot(2, 3, '012789')
+# Usage: creates a pca2 vs pca3 plot for the genres blues, classical, jazz
+pca_plot(2, 3, '015')

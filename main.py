@@ -6,9 +6,10 @@ import numpy as np
 def net(genres_to_keep = '0123456789', epochs = 80, learning_rate = 0.001, hnodes = [500, 100, 10], use_layers = 2):
 	"""
 	Neural network function, returns True if training was successful and False otherwise. In case training was 
-    unsuccessful try decreasing learning_rate. hnodes contains number of nodes in hidden layers, use_layers 
-    specifies if 2 or 3 hidden layers are to be used. genres_to_keep is a string containing the numeric ids of 
-    genres we'd like experiment on. net computes a model and saves it in model/model(use_layers) folder.
+    unsuccessful (Method strayed from minima) try decreasing learning_rate. hnodes contains number of nodes in 
+    hidden layers, use_layers specifies if 2 or 3 hidden layers are to be used. genres_to_keep is a string containing 
+    the numeric ids of genres we'd like experiment on. net computes a model and saves it in model/model(use_layers) 
+    folder.
 	"""
 	# Prepare data
 	gtzan = pr.MusicDB(p2_train, p2_train_label, p2_test, p2_test_label)
@@ -93,10 +94,15 @@ def net(genres_to_keep = '0123456789', epochs = 80, learning_rate = 0.001, hnode
 		# Store the model for future use
 		saver.save(sess, save_path)
 	# Store the results in a text file
+	g2k = list(map(int, list(genres_to_keep)))
+	g2k.sort()
+	g2k = ''.join([str(i) for i in g2k])
 	with open(p2_results, 'a') as file:
 		file.write('{}  {}  {:.4f}\t{:.2f}\t{:.2f}\t{}  {}\n'\
-			.format(genres_to_keep, epochs, learning_rate, train_acc*100, test_acc*100, hnodes, use_layers))
+			.format(g2k, epochs, learning_rate, train_acc*100, test_acc*100, hnodes, use_layers))
 	return True # Training was successful 
 
-
-net('02', 80, 0.002, [500, 100, 10], use_layers = 2)
+# Usage: the example below creates a prdiction model and runs it on the 2-genre set {classical, metal} for both
+# the training data and test data with 2 hidden layers with the 1st one having 200 nodes and 2nd one having 100
+# nodes, as we are only using 2 hidden layers, last entry of hnode list is ignored 
+net('16', 300, 0.0025, [200, 100, 100], use_layers = 2)

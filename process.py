@@ -44,10 +44,11 @@ def label(file):
 			y[i] = 1.0
 	return np.array(y)
 
-@timer # Computes features and labels from dataset stores them in 4 files 
-# train.csv, train_label.csv, test_label.csv and test.csv as dictated by the select function
-# also notes down files used for training and test sets in train_list.txt and test_list.txt
+@timer 
 def store(tfrac = 0.7, random = False):
+	"""Computes features and labels from dataset stores them in 4 files 
+	train.csv, train_label.csv, test_label.csv and test.csv as dictated by the select function
+	also notes down files used for training and test sets in train_list.txt and test_list.txt"""
 	train, test = select(tfrac, random)
 	d, l= {}, {}
 	features, labels = feature_names(), feature_names('g', 10)

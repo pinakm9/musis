@@ -1,3 +1,5 @@
+# Converts GTZAN database to .wav format
+
 import subprocess as sp
 import os
 from utility import *

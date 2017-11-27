@@ -1,3 +1,5 @@
+# This module contains various helper functions and global variables for the project
+
 from time import time
 import os
 
@@ -6,12 +8,12 @@ fpf = 160 # features per frequency (choose as a multiple of 4)
 # Path variables used by different modules 
 p2_data = './../data/genres/'
 p2_wav = './../data/genres_wav/'
-p2_train = './../data/train.csv'
-p2_test = './../data/test.csv'
-p2_train_label = './../data/train_label.csv'
-p2_test_label = './../data/test_label.csv'
-p2_train_list = './../data/train_list.txt'
-p2_test_list = './../data/test_list.txt'
+p2_train = 'train.csv'
+p2_test = 'test.csv'
+p2_train_label = 'train_label.csv'
+p2_test_label = 'test_label.csv'
+p2_train_list = 'train_list.txt'
+p2_test_list = 'test_list.txt'
 p2_m2 = 'models/model2/model2.ckpt'
 p2_m3 = 'models/model3/model3.ckpt'
 p2_results = 'results.txt'
